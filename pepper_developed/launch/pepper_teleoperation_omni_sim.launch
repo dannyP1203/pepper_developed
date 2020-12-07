@@ -1,0 +1,14 @@
+<launch>
+
+  <arg name="controller"            default="false" />
+
+  <node pkg="pepper_developed" type="pepper_teleoperation_omni_sim.py" name="pepper_teleoperation" output="screen" unless="$(arg controller)" >
+    <remap from="cmd_vel" to="pepper/cmd_vel" />
+  </node>
+
+  <include file="$(find teleop_twist_joy)/launch/teleop.launch" if="$(arg controller)" >
+    <arg name="config_filepath" value="$(find teleop_twist_joy)/config/ps3-holonomic_sim.config.yaml" />
+    <arg name="cmd_topic" value="pepper/cmd_vel"/>
+  </include>
+
+</launch>

@@ -1,0 +1,12 @@
+<launch>
+
+  <!-- Export the env variables in the .bashrc -->
+  <arg name="nao_ip"            default="$(optenv NAO_IP 127.0.0.1)" />
+  <arg name="nao_port"          default="$(optenv NAO_PORT 9559)" />
+
+  <arg name="controller"            default="false" />
+
+  <node pkg="pepper_developed" type="pepper_teleoperation_omni.py" name="pepper_teleoperation" args="--ip $(arg nao_ip) --port $(arg nao_port)" output="screen" unless="$(arg controller)"/>
+
+  <include file="$(find teleop_twist_joy)/launch/teleop.launch" if="$(arg controller)" />
+</launch>

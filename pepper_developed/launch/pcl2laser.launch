@@ -1,0 +1,70 @@
+<!--
+                  POINTCLOUD TO LASERSCAN NODE
+ -->
+<!-- <launch>
+  <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pcl2laser">
+
+        <remap from="cloud_in" to="pepper/camera/depth/points"/>
+        <remap from="scan" to="/pcl/scan"/>
+        <rosparam>
+            target_frame: SurroundingFrontLaser_frame           # Leave disabled to output scan in pointcloud frame
+            transform_tolerance: 0.01
+            min_height: 0.0
+            max_height: 5.0
+
+            angle_min: -1.5708 # -M_PI/2
+            angle_max: 1.5708 # M_PI/2
+            angle_increment: 0.0087 # M_PI/360.0
+            scan_time: 0.01
+            range_min: 0.01
+            range_max: 10.0
+            use_inf: true
+
+            # Concurrency level, affects number of pointclouds queued for processing and number of threads used
+            # 0 : Detect number of cores
+            # 1 : Single threaded
+            # 2->inf : Parallelism level
+            concurrency_level: 1
+        </rosparam>
+    </node>
+</launch> -->
+
+
+
+
+
+<!--
+                  POINTCLOUD TO LASERSCAN NODELET
+ -->
+<launch>
+    <node pkg="nodelet" type="nodelet" name="pointcloud_to_laserscan_manager" output="screen" respawn="true" args="manager"/>
+
+    <node pkg="nodelet" type="nodelet" name="pointcloud_to_laserscan_worker" args="load pointcloud_to_laserscan/pointcloud_to_laserscan_nodelet pointcloud_to_laserscan_manager">
+
+        <remap from="cloud_in" to="/pepper_robot/camera/depth_registered/points"/>
+        <remap from="scan" to="/pcl/scan"/>
+        <rosparam>
+            #target_frame: CameraDepth_optical_frame     # Equivalente a lasciarlo vuoto e viene sbagliato, probabilmente qualche errore nelle TF (in simulazione)
+            #target_frame: SurroundingFrontLaser_frame
+            target_frame:  base_footprint
+
+            transform_tolerance: 0.01
+            min_height: 0.0
+            max_height: 5.0
+
+            angle_min: -1.5708 # -M_PI/2
+            angle_max: 1.5708 # M_PI/2
+            angle_increment: 0.0087 # M_PI/360.0
+            scan_time: 0.01
+            range_min: 0.01
+            range_max: 10.0
+            use_inf: true
+
+            # Concurrency level, affects number of pointclouds queued for processing, thread number governed by nodelet manager
+            # 0 : Detect number of cores
+            # 1 : Single threaded
+            # 2->inf : Parallelism level
+            concurrency_level: 0
+        </rosparam>
+   </node>
+</launch>

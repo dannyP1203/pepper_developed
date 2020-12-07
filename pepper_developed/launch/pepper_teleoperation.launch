@@ -1,0 +1,10 @@
+<launch>
+
+  <!-- Export the env variables in the .bashrc -->
+  <arg name="nao_ip"            default="$(optenv NAO_IP 127.0.0.1)" />
+  <arg name="nao_port"          default="$(optenv NAO_PORT 9559)" />
+
+  <!-- Launch start_pepper node to turn off autonomous life -->
+  <node pkg="pepper_developed" type="pepper_teleoperation.py" name="pepper_teleoperation" args="--ip $(arg nao_ip) --port $(arg nao_port)" output="screen" />
+
+</launch>
