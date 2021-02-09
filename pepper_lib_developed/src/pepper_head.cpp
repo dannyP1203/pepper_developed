@@ -75,4 +75,18 @@ namespace pepper_tools
 		}
 	}
 
+	void PepperHead::setAngle(std::string joint, float angle)
+	{
+		try
+		{
+			ROS_INFO_STREAM("Moving " << joint << " joint to " << angle);
+			motion_proxy_.call<void>("angleInterpolation", joint, angle, 0.25, true);
+			ros::Duration(0.1).sleep();
+		}
+		catch (const std::exception& e)
+		{
+			ROS_ERROR("Motion: Failed to move head!\n\tTrace: %s", e.what());
+		}
+	}
+
 }  // pepper_tools ns end

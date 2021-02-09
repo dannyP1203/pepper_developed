@@ -6,12 +6,27 @@
 
 // ROS
 #include <ros/ros.h>
+#include <sensor_msgs/JointState.h>
 
 // PepperHead Class
 #include <pepper_lib_developed/pepper_head.hpp>
 
 // Boost
 #include <boost/shared_ptr.hpp>
+
+
+// Global
+std::string joint_name;
+float joint_angle;
+
+
+
+void head_callback(const sensor_msgs::JointState::ConstPtr& msg)
+{
+		joint_name = msg->name[0];
+		joint_angle = msg->position[0];
+}
+
 
 
 
@@ -53,7 +68,29 @@ int main(int argc, char** argv) {
 	// Create pepper tools object
 	boost::shared_ptr <pepper_tools::PepperHead> ph = boost::shared_ptr<pepper_tools::PepperHead>(new pepper_tools::PepperHead(app.session()));
 
+	// Subscriber to head commands
+	ros::Subscriber cmd_sub = nh.subscribe("/cmd_head", 1, head_callback);
+	ros::Rate rate(5);
+
+	// Set head stiffness on
 	ph->setMaxStiffness();
+
+	// Previous commanded angles
+	std::string prev_name = joint_name;
+	float prev_angle = joint_angle;
+
+	while (ros::ok())
+	{
+		if ((prev_name != joint_name) || (prev_angle != joint_angle))
+		{
+			prev_name = joint_name;
+			prev_angle = joint_angle;
+			ph->setAngle(prev_name, prev_angle);
+			// std::cout << prev_name <<"   " << prev_angle << '\n';
+		}
+		ros::spinOnce();
+		rate.sleep();
+	}
 
 	return 0;
 }

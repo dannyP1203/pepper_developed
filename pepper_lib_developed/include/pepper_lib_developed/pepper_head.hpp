@@ -29,6 +29,9 @@ public:
 	void setMinStiffness();
 	void setStiffness(float value);
 
+	// Set joint positions
+	void setAngle(std::string joint, float angle);
+
 
 private:
 	qi::AnyObject motion_proxy_;

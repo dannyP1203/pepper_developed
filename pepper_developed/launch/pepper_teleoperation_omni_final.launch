@@ -1,0 +1,13 @@
+<launch>
+
+  <arg name="controller"            default="false" />
+  <arg name="sim"                   default="false" />
+
+  <!-- Launch keyboard teleop or joy teleop -->
+  <node unless="$(arg controller)" pkg="pepper_developed" type="pepper_teleoperation_omni_final.py" name="pepper_teleoperation" output="screen" launch-prefix="xterm -e"/>
+  <include if="$(arg controller)" file="$(find teleop_twist_joy)/launch/teleop.launch" />
+
+  <!-- Run head control node for real Pepper -->
+  <node unless="$(arg sim)" pkg="pepper_developed" type="head_control" name="head_control" output="screen" />
+
+</launch>
